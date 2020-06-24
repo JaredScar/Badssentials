@@ -1,8 +1,11 @@
 # Badssentials
 ## What is it?
 Badssentials is essentially the most essential script you need. I saw multiple scripts split up and never saw a single script like this. I figured, I might as well make one, so I did. Badssentials includes AOP, PeaceTime, postal waypointing, and configurable placeholder watermarks! The amount of possibilities is endless with this script! Make sure you take a look at `Screenshots` to see what you can make with this!
-Screenshots
+## Screenshots
 
+![](https://i.gyazo.com/07b89a6d03ac42f4cf496265d1e55c4f.png)
+
+![https://i.gyazo.com/557c43a66a594cfda785ffeda51c8fc3.gif](https://i.gyazo.com/557c43a66a594cfda785ffeda51c8fc3.gif)
 
 ## Commands
 
@@ -86,4 +89,3 @@ Postals = {
 }
 ```
 Essentially, you can add as many watermarks to this configuration that you want just by following the format of the previous ones. The placeholders all in this configuration can be used as well. Currently only EST time is supported, but there may be more coming in the future (pull request maybe please? lol)...
-Download
