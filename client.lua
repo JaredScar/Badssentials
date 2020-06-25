@@ -96,17 +96,14 @@ function getPostalCoords(postal)
 	end
 	return nil;
 end
+zone = nil;
+streetName = nil;
+postal = nil;
+postalDist = nil;
+degree = nil;
 Citizen.CreateThread(function()
 	while true do 
-		Wait(0);
-		if peacetime then 
-			if IsControlPressed(0, 106) then
-                ShowInfo("~r~Peacetime is enabled. ~n~~s~You can not shoot.")
-            end
-            SetPlayerCanDoDriveBy(player, false)
-            DisablePlayerFiring(player, true)
-            DisableControlAction(0, 140) -- Melee R
-		end
+		Wait(150);
 		local pos = GetEntityCoords(PlayerPedId())
 		local playerX, playerY = table.unpack(pos)
 		local ndm = -1 -- nearest distance magnitude
@@ -124,12 +121,26 @@ Citizen.CreateThread(function()
 			local nd = math.sqrt(ndm) -- nearest distance
 			nearest = {i = ni, d = nd}
 		end
-		local postal = postals[nearest.i].code;
-		local postalDist = round(nearest.d, 2);
+		postal = postals[nearest.i].code;
+		postalDist = round(nearest.d, 2);
 		local var1, var2 = GetStreetNameAtCoord(pos.x, pos.y, pos.z, Citizen.ResultAsInteger(), Citizen.ResultAsInteger())
-		local zone = GetLabelText(GetNameOfZone(pos.x, pos.y, pos.z));
-		local degree = degreesToIntercardinalDirection(GetCardinalDirection());
-		local streetName = GetStreetNameFromHashKey(var1);
+		zone = GetLabelText(GetNameOfZone(pos.x, pos.y, pos.z));
+		degree = degreesToIntercardinalDirection(GetCardinalDirection());
+		streetName = GetStreetNameFromHashKey(var1);
+	end 
+end)
+Citizen.CreateThread(function()
+	Wait(800);
+	while true do 
+		Wait(0);
+		if peacetime then 
+			if IsControlPressed(0, 106) then
+                ShowInfo("~r~Peacetime is enabled. ~n~~s~You can not shoot.")
+            end
+            SetPlayerCanDoDriveBy(player, false)
+            DisablePlayerFiring(player, true)
+            DisableControlAction(0, 140) -- Melee R
+		end
 		for _, v in pairs(Config.Displays) do 
 			local x = v.x;
 			local y = v.y;
