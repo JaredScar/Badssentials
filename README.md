@@ -1,4 +1,5 @@
-# Badssentials
+# This README is no longer updated, please refer to https://docs.badger.store/fivem-misc.-scripts/badssentials for documentation 
+
 ## What is it?
 Badssentials is essentially the most essential script you need. I saw multiple scripts split up and never saw a single script like this. I figured, I might as well make one, so I did. Badssentials includes AOP, PeaceTime, postal waypointing, and configurable placeholder watermarks! The amount of possibilities is endless with this script! Make sure you take a look at `Screenshots` to see what you can make with this!
 ## Screenshots
