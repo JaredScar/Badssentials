@@ -18,6 +18,54 @@ function Draw2DText(x, y, text, scale, center)
     AddTextComponentString(text)
     DrawText(x, y)
 end
+AddEventHandler('onClientMapStart', function()
+	Citizen.Trace("RPRevive: Disabling le autospawn.")
+	exports.spawnmanager:spawnPlayer() -- Ensure player spawns into server.
+	Citizen.Wait(2500)
+	exports.spawnmanager:setAutoSpawn(false)
+	Citizen.Trace("RPRevive: Autospawn is disabled.")
+end)
+deadCheck = false;
+Citizen.CreateThread(function()
+	while true do 
+		Wait(0);
+		local ped = GetPlayerPed(-1);
+		if IsEntityDead(ped) and not deadCheck then
+			deadCheck = true;
+			TriggerServerEvent("Badssentials:DeathTrigger");
+			print("[Badssentials] Set you as dead");
+		else 
+			if not IsEntityDead(ped) then 
+				deadCheck = false;
+			end 
+		end
+	end
+end)
+function revivePed(ped)
+    local playerPos = GetEntityCoords(ped, true)
+    isDead = false
+    timerCount = reviveWait
+    NetworkResurrectLocalPlayer(playerPos, true, true, false)
+    SetPlayerInvincible(ped, false)
+    ClearPedBloodDamage(ped)
+    deadCheck = false;
+end
+RegisterNetEvent('Badssentials:RevivePlayer')
+AddEventHandler('Badssentials:RevivePlayer', function()
+	local ped = GetPlayerPed(-1);
+	if IsEntityDead(ped) then 
+		revivePed(ped);
+	end
+end)
+RegisterNetEvent('Badssentials:RespawnPlayer')
+AddEventHandler('Badssentials:RespawnPlayer', function()
+	local ped = GetPlayerPed(-1);
+	if IsEntityDead(ped) then 
+		revivePed(ped);
+		SetEntityCoords(ped, 1828.43, 3693.01, 34.22, false, false, false, false);
+		SetEntityCoords(entity, xPos, yPos, zPos, xAxis, yAxis, zAxis, clearArea)
+	end
+end)
 tickDegree = 0;
 local nearest = nil;
 local postals = Postals;
