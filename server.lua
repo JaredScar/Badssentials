@@ -92,9 +92,11 @@ RegisterCommand("revive", function(source, args, rawCommand)
     end
   else 
     -- They are reviving someone else 
-    TriggerClientEvent('Badssentials:RevivePlayer', tonumber(args[1]));
-    sendMsg(src, "You have revived player ^5" .. GetPlayerName(tonumber(args[1])) .. " ^3successfully!");
-    sendMsg(tonumber(args[1]), "You have been revived successfully by ^5" .. GetPlayerName(src) .. "^3!");
+    if tonumber(args[1]) ~= src then 
+      TriggerClientEvent('Badssentials:RevivePlayer', tonumber(args[1]));
+      sendMsg(src, "You have revived player ^5" .. GetPlayerName(tonumber(args[1])) .. " ^3successfully!");
+      sendMsg(tonumber(args[1]), "You have been revived successfully by ^5" .. GetPlayerName(src) .. "^3!");
+    end
   end
 end)
 RegisterCommand("respawn", function(source, args, rawCommand)

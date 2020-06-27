@@ -30,13 +30,18 @@ Citizen.CreateThread(function()
 	while true do 
 		Wait(0);
 		local ped = GetPlayerPed(-1);
+		if IsEntityDead(ped) then 
+			Draw2DText(.5, .3, "~r~You are knocked out or dead...", 1.0, 1);
+			Draw2DText(.5, .4, "~b~You may use ~g~/revive ~b~if you were knocked out", 1.0, 1);
+			Draw2DText(.5, .5, "~b~If you are dead, you must use ~g~/respawn", 1.0, 1);
+		end
 		if IsEntityDead(ped) and not deadCheck then
 			deadCheck = true;
 			TriggerServerEvent("Badssentials:DeathTrigger");
-			print("[Badssentials] Set you as dead");
 		else 
 			if not IsEntityDead(ped) then 
 				deadCheck = false;
+				StopScreenEffect("DeathFailOut")
 			end 
 		end
 	end

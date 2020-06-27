@@ -4,23 +4,23 @@ Config = {
 	Respawn_Delay = 30, -- Set to 0 to disable 
 	Displays = {
 		['Noir RP Server | Discord'] = {
-			x = .165,
-			y = .80,
-			display = "~p~Noir RP ~w~| discord.gg/BB68c3d",
-			textScale = .70,
+			x = .800,
+			y = .01,
+			display = "~g~Noir RP ~w~| discord.gg/BB68c3d",
+			textScale = .55,
 			enabled = true
 		},
 		['Compass Location'] = {
 			x = .165,
 			y = .85,
-			display = "~w~| ~p~{COMPASS} ~w~|",
+			display = "~w~| ~g~{COMPASS} ~w~|",
 			textScale = 1.0,
 			enabled = true
 		},
 		['Street Location'] = {
 			x = .22,
 			y = .855,
-			display = "~p~{STREET_NAME}",
+			display = "~g~{STREET_NAME}",
 			textScale = .45,
 			enabled = true
 		},
@@ -33,22 +33,22 @@ Config = {
 		},
 		['Nearest Postal'] = {
 			x = .165,
-			y = .93,
-			display = "~p~Nearest Postal: ~w~{NEAREST_POSTAL} (~p~{NEAREST_POSTAL_DISTANCE}m~w~)",
+			y = .91,
+			display = "~w~Nearest ~g~Postal: ~w~{NEAREST_POSTAL} (~w~{NEAREST_POSTAL_DISTANCE}m~w~)",
 			textScale = .4,
 			enabled = true
 		},
 		['Time & Date'] = {
 			x = .165,
-			y = .95,
-			display = "~p~Time (EST): ~w~{EST_TIME} ~p~| Date: ~w~{US_MONTH}~p~/~w~{US_DAY}~p~/~w~{US_YEAR}",
+			y = .93,
+			display = "~g~Time (EST): ~w~{EST_TIME} ~g~| Date: ~w~{US_MONTH}~g~/~w~{US_DAY}~g~/~w~{US_YEAR}",
 			textScale = .4,
 			enabled = true
 		},
 		['AOP & PeaceTime'] = {
 			x = .165,
-			y = .97,
-			display = "~p~Current AOP: {CURRENT_AOP} ~p~| ~w~PeaceTime: {PEACETIME_STATUS}",
+			y = .95,
+			display = "~w~Current ~g~AOP: {CURRENT_AOP} ~g~| ~w~PeaceTime: {PEACETIME_STATUS}",
 			textScale = .4,
 			enabled = true
 		}
