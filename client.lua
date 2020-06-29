@@ -18,6 +18,86 @@ function Draw2DText(x, y, text, scale, center)
     AddTextComponentString(text)
     DrawText(x, y)
 end
+ann = nil;
+announcement = false;
+header = Config.AnnouncementHeader;
+displayTime = Config.AnnounceDisplayTime;
+timer = 0;
+anns = {};
+RegisterNetEvent('Badssentials:Announce')
+AddEventHandler('Badssentials:Announce', function(msg)
+	timer = 0;
+	announcement = true;
+	ann = msg;
+	if #ann > 70 then 
+		-- Needs to be split up 
+		local words = split(ann, " ");
+		local charCount = 0;
+		local curAnn = "";
+		for i = 1, #words do 
+			local word = words[i];
+			if charCount >= 70 then
+				table.insert(anns, curAnn);
+				curAnn = "" .. word .. " "; 
+				charCount = 0;
+			else 
+				charCount = charCount + #word;
+				curAnn = curAnn .. word .. " ";
+			end
+		end
+		table.insert(anns, curAnn);
+	end
+end)
+function split(pString, pPattern)
+   local Table = {}  -- NOTE: use {n = 0} in Lua-5.0
+   local fpat = "(.-)" .. pPattern
+   local last_end = 1
+   local s, e, cap = pString:find(fpat, 1)
+   while s do
+      if s ~= 1 or cap ~= "" then
+     table.insert(Table,cap)
+      end
+      last_end = e+1
+      s, e, cap = pString:find(fpat, last_end)
+   end
+   if last_end <= #pString then
+      cap = pString:sub(last_end)
+      table.insert(Table, cap)
+   end
+   return Table
+end
+Citizen.CreateThread(function()
+	while true do 
+		Citizen.Wait((1000)); -- Every second 
+		if ann ~= nil and announcement then 
+			timer = timer + 1;
+			if timer >= displayTime then 
+				ann = nil;
+				announcement = false;
+				timer = 0;
+			end
+		end
+	end
+end)
+Citizen.CreateThread(function()
+	while true do 
+		Wait(0);
+		if ann ~= nil and announcement then 
+			-- 70 character limit per announcement using .8
+			Draw2DText(.5, .3, header, 1.5, true);
+			--Draw2DText(.5, .5, ann, 0.8, true);
+			local cout = .4;
+			if #ann > 70 then 
+				for i = 1, #anns do 
+					Draw2DText(.5, cout, anns[i], 0.8, true);
+					cout = cout + .05;
+				end
+			else 
+				Draw2DText(.5, cout, ann, 0.8, true);
+			end
+		end
+	end
+end)
 AddEventHandler('onClientMapStart', function()
 	Citizen.Trace("RPRevive: Disabling le autospawn.")
 	exports.spawnmanager:spawnPlayer() -- Ensure player spawns into server.

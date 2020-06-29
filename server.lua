@@ -5,6 +5,17 @@ function sendMsg(src, msg)
   TriggerClientEvent('chat:addMessage', src, {args = {Config.Prefix .. msg} });
 end
 
+RegisterCommand('announce', function(source, args, raw) 
+  local src = source;
+  if IsPlayerAceAllowed(src, "Badssentials.Announce") then 
+    -- Allowed to use /announce 
+    if #args > 1 then 
+      local ann = table.concat(args, " ");
+      TriggerClientEvent('Badssentials:Announce', -1, ann);
+    end
+  end
+end)
+
 Citizen.CreateThread(function()
   while true do 
     Wait(1000);

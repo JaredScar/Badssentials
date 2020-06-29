@@ -1,5 +1,7 @@
 Config = {
 	Prefix = '^5[^1Badssentials^5] ^3',
+	AnnouncementHeader = '~b~[~p~NoirRP Announcement~b~]',
+	AnnounceDisplayTime = 15, -- How many seconds should announcements display for?
 	Revive_Delay = 60, -- Set to 0 to disable 
 	Respawn_Delay = 30, -- Set to 0 to disable 
 	Displays = {
