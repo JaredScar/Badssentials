@@ -9,7 +9,7 @@ RegisterCommand('announce', function(source, args, raw)
   local src = source;
   if IsPlayerAceAllowed(src, "Badssentials.Announce") then 
     -- Allowed to use /announce 
-    if #args > 1 then 
+    if #args > 0 then 
       local ann = table.concat(args, " ");
       TriggerClientEvent('Badssentials:Announce', -1, ann);
     end
