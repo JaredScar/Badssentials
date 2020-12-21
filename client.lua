@@ -84,9 +84,10 @@ Citizen.CreateThread(function()
 		Wait(0);
 		if ann ~= nil and announcement then 
 			-- 70 character limit per announcement using .8
-			Draw2DText(.5, .3, header, 1.5, true);
+			local startCout = Config.AnnouncementHeaderPlacement;
+			Draw2DText(.5, startCout, header, 1.5, true);
 			--Draw2DText(.5, .5, ann, 0.8, true);
-			local cout = .4;
+			local cout = startCout + .1;
 			if #ann > 70 then 
 				for i = 1, #anns do 
 					Draw2DText(.5, cout, anns[i], 0.8, true);
