@@ -1,3 +1,7 @@
+# About Fork:
+This edit of Badssentials simply adds more configurable options to the config.lua. This makes it a lot easier & convenient for those who want to qucikly edit the script and throw it in their server.
+
+
 # This README is no longer updated, please refer to https://docs.badger.store/fivem-misc.-scripts/badssentials for documentation 
 
 ## What is it?
@@ -33,6 +37,29 @@ Badssentials is essentially the most essential script you need. I saw multiple s
 ```
 Config = {
 	Prefix = '^5[^1Badssentials^5] ^3',
+	ScreenAffects = {
+		AnnounceCommand = "announce",
+		AnnouncementHeader = '~b~[~p~NoirRP Announcement~b~]',
+		AnnouncementPlacement = .3, -- Set to 0 for top or .3 for middle of screen
+		AnnounceDisplayTime = 15, -- How many seconds should announcements display for?
+		DeathScreen = true, -- Enable/Disable the death screen. (Enabled by default.)
+	},
+	AOPSystem = {
+		DefaultAOP = "Sandy Shores",
+		AOPCommand = "aop",
+	},
+	ReviveSystem = {
+		Revive_Delay = 60, -- Set to 0 to disable 
+		Respawn_Delay = 30, -- Set to 0 to disable
+		RespawnCommand = "Respawn",
+		ReviveCommand = "Revive",
+	},
+	Misc = {
+		PostalCommand = "postal",
+		ToggleHUDCommand = "toggle-hud",
+		Peacetime = "peacetime", -- Peacetime & PT both control the peacetime system.
+		PT = "pt"
+	},
 	Displays = {
 		['Noir RP Server | Discord'] = {
 			x = .165,
