@@ -1,7 +1,3 @@
-# About Fork:
-This edit of Badssentials simply adds more configurable options to the config.lua. This makes it a lot easier & convenient for those who want to qucikly edit the script and throw it in their server.
-
-
 # This README is no longer updated, please refer to https://docs.badger.store/fivem-misc.-scripts/badssentials for documentation 
 
 ## What is it?
