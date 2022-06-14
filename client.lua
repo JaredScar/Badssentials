@@ -20,8 +20,8 @@ function Draw2DText(x, y, text, scale, center)
 end
 ann = nil;
 announcement = false;
-header = Config.AnnouncementHeader;
-displayTime = Config.AnnounceDisplayTime;
+header = Config.ScreenAffects.AnnouncementHeader;
+displayTime = Config.ScreenAffects.AnnounceDisplayTime;
 timer = 0;
 anns = {};
 RegisterNetEvent('Badssentials:Announce')
@@ -111,10 +111,12 @@ Citizen.CreateThread(function()
 	while true do 
 		Wait(0);
 		local ped = GetPlayerPed(-1);
-		if IsEntityDead(ped) then 
-			Draw2DText(.5, .3, "~r~You are knocked out or dead...", 1.0, 1);
-			Draw2DText(.5, .4, "~b~You may use ~g~/revive ~b~if you were knocked out", 1.0, 1);
-			Draw2DText(.5, .5, "~b~If you are dead, you must use ~g~/respawn", 1.0, 1);
+		if Config.ScreenAffects.DeathScreen then
+			if IsEntityDead(ped) then 
+				Draw2DText(.5, .3, "~r~You are knocked out or dead...", 1.0, 1);
+				Draw2DText(.5, .4, "~b~You may use ~g~/revive ~b~if you were knocked out", 1.0, 1);
+				Draw2DText(.5, .5, "~b~If you are dead, you must use ~g~/respawn", 1.0, 1);
+			end
 		end
 		if IsEntityDead(ped) and not deadCheck then
 			deadCheck = true;
@@ -198,7 +200,7 @@ AddEventHandler('Badssentials:SetPT', function(pt)
 	peacetime = pt;
 end)
 displaysHidden = false;
-RegisterCommand("toggle-hud", function()
+RegisterCommand(Config.Misc.ToggleHUDCommand, function()
 	displaysHidden = not displaysHidden;
 	TriggerEvent('Badger-Priorities:HideDisplay')
 	if displaysHidden then 
@@ -207,7 +209,7 @@ RegisterCommand("toggle-hud", function()
 		DisplayRadar(true);
 	end
 end)
-RegisterCommand("postal", function(source, args, raw)
+RegisterCommand(Config.Misc.PostalCommand, function(source, args, raw)
 	if #args > 0 then 
 		local postalCoords = getPostalCoords(args[1]);
 		if postalCoords ~= nil then 

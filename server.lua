@@ -5,7 +5,7 @@ function sendMsg(src, msg)
   TriggerClientEvent('chat:addMessage', src, {args = {Config.Prefix .. msg} });
 end
 
-RegisterCommand('announce', function(source, args, raw) 
+RegisterCommand(Config.ScreenAffects.AnnounceCommand, function(source, args, raw) 
   local src = source;
   if IsPlayerAceAllowed(src, "Badssentials.Announce") then 
     -- Allowed to use /announce 
@@ -42,8 +42,8 @@ Citizen.CreateThread(function()
   end
 end)
 peacetime = false;
-currentAOP = "Sandy Shores"; -- By default 
-RegisterCommand("aop", function(source, args, rawCommand)
+currentAOP = Config.AOPSystem.DefaultAOP; -- By default 
+RegisterCommand(Config.AOPSystem.AOPCommand, function(source, args, rawCommand)
   local src = source;
   if IsPlayerAceAllowed(src, "Badssentials.AOP") then 
     -- Allowed to use /aop <aop>
@@ -79,10 +79,10 @@ end)
 RegisterNetEvent("Badssentials:DeathTrigger")
 AddEventHandler("Badssentials:DeathTrigger", function()
   local src = source;
-  timersRev[src] = Config.Revive_Delay;
-  timersRes[src] = Config.Respawn_Delay;
+  timersRev[src] = Config.ReviveSystem.Revive_Delay;
+  timersRes[src] = Config.ReviveSystem.Respawn_Delay;
 end)
-RegisterCommand("revive", function(source, args, rawCommand)
+RegisterCommand(Config.ReviveSystem.ReviveCommand, function(source, args, rawCommand)
   local src = source;
   if #args == 0 then 
     -- Revive themselves
@@ -110,7 +110,7 @@ RegisterCommand("revive", function(source, args, rawCommand)
     end
   end
 end)
-RegisterCommand("respawn", function(source, args, rawCommand)
+RegisterCommand(Config.ReviveSystem.RespawnCommand, function(source, args, rawCommand)
   local src = source;
   if #args == 0 then 
     -- Respawn themselves
@@ -133,7 +133,7 @@ RegisterCommand("respawn", function(source, args, rawCommand)
 end)
 
 
-RegisterCommand("peacetime", function(source, args, rawCommand)
+RegisterCommand(Config.Misc.Peacetime, function(source, args, rawCommand)
   local src = source;
   if IsPlayerAceAllowed(src, "Badssentials.PeaceTime") then
     peacetime = not peacetime;
@@ -145,7 +145,7 @@ RegisterCommand("peacetime", function(source, args, rawCommand)
     end
   end
 end)
-RegisterCommand("pt", function(source, args, rawCommand)
+RegisterCommand(Config.Misc.PT, function(source, args, rawCommand)
   local src = source;
   if IsPlayerAceAllowed(src, "Badssentials.PeaceTime") then
     peacetime = not peacetime;
