@@ -18,6 +18,7 @@ function Draw2DText(x, y, text, scale, center)
     AddTextComponentString(text)
     DrawText(x, y)
 end
+id = GetPlayerServerId(PlayerId())
 ann = nil;
 announcement = false;
 header = Config.ScreenAffects.AnnouncementHeader;
@@ -296,6 +297,7 @@ Citizen.CreateThread(function()
 				if (disp:find("{COMPASS}")) then 
 					disp = disp:gsub("{COMPASS}", degree);
 				end
+				disp = disp:gsub("{ID}", id);
 				disp = disp:gsub("{EST_TIME}", currentTime);
 				disp = disp:gsub("{US_DAY}", currentDay);
 				disp = disp:gsub("{US_MONTH}", currentMonth);
