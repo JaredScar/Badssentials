@@ -5,6 +5,10 @@ function sendMsg(src, msg)
   TriggerClientEvent('chat:addMessage', src, {args = {Config.Prefix .. msg} });
 end
 
+function GetAOP()
+  return currentAOP
+end
+
 RegisterCommand(Config.ScreenAffects.AnnounceCommand, function(source, args, raw) 
   local src = source;
   if IsPlayerAceAllowed(src, "Badssentials.Announce") then 
