@@ -45,6 +45,10 @@ function GetPeaceTimeStatus()
   return peacetime
 end
 
+if GetCurrentResourceName() ~= "Badssentials" then
+  print("[" .. GetCurrentResourceName() .. "] ^3WARNING: The resource needs to be named '^0Badssentials^3' in order for everything to function correctly! Please change the resource name back to 'Badssentials'!")
+end
+
 RegisterCommand(Config.ScreenAffects.AnnounceCommand, function(source, args, raw) 
   local src = source;
   if IsPlayerAceAllowed(src, Config.ScreenAffects.acePermission) then 
