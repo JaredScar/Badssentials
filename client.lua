@@ -165,7 +165,7 @@ AddEventHandler('Badssentials:RespawnPlayer', function()
 				revivePed(ped);
 				SetEntityCoords(ped, v.x, v.y, v.z, false, false, false, false);
 				SetEntityCoords(entity, xPos, yPos, zPos, xAxis, yAxis, zAxis, clearArea)
-				TriggerEvent('chat:addMessage', {args = {Config.Prefix .. "Respawned successfully!"} });
+				TriggerEvent('chat:addMessage', {args = {Config.Prefix .. Config.ReviveSystem.RespawnMessage} });
 			end
 		end
 
@@ -174,7 +174,7 @@ AddEventHandler('Badssentials:RespawnPlayer', function()
 			revivePed(ped);
 			SetEntityCoords(ped, Config.ReviveSystem.RespawnLocations.DefaultLocation.x, Config.ReviveSystem.RespawnLocations.DefaultLocation.y, Config.ReviveSystem.RespawnLocations.DefaultLocation.z, false, false, false, false);
 			SetEntityCoords(entity, xPos, yPos, zPos, xAxis, yAxis, zAxis, clearArea)
-			TriggerEvent('chat:addMessage', {args = {Config.Prefix .. "Respawned successfully!"} });
+			TriggerEvent('chat:addMessage', {args = {Config.Prefix .. Config.ReviveSystem.ReviveMessage} });
 		end
 	end
 end)

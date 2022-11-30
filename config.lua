@@ -2,7 +2,7 @@ Config = {
 	Prefix = '^5[^1Badssentials^5] ^3',
 	ScreenAffects = {
 		AnnounceCommand = "announce",
-        acePermission = "Badssentials.Announce", --The ace permission need to run the AnnounceCommand.
+        AcePermission = "Badssentials.Announce", --The ace permission need to run the AnnounceCommand.
 		AnnouncementHeader = '~b~[~p~FIRP Announcement~b~]',
 		AnnouncementPlacement = 0, -- Set to 0 for top or .3 for middle of screen
 		AnnounceDisplayTime = 15, -- How many seconds should announcements display for?
@@ -12,17 +12,23 @@ Config = {
         DefaultAOP = "Los Santos",
         AOPCommand = "aop",
         --Announcement sent to players when AOP is changed. Set to "", or nil to disable.
-        aopAnnouncement = "The AOP has changed to '{NEW_AOP}'. Finish your current scene(s) and head to {NEW_AOP}. ^1Failure to do so could lead to punishment!^0",
-        acePermission = "Badssentials.AOP", --The ace permission need to run the AOPCommand.
+        AOP_Announcement = "The AOP has changed to '{NEW_AOP}'. Finish your current scene(s) and head to {NEW_AOP}. ^1Failure to do so could lead to punishment!^0",
+        AOP_AcePermission = "Badssentials.AOP", --The ace permission need to run the AOPCommand.
     },
     ReviveSystem = {
+        enable = true, --Enable/Disable Revive System
         Revive_Delay = 120, -- Set to 0 to disable 
         Respawn_Delay = 60, -- Set to 0 to disable
         RespawnCommand = "respawn",
+        RespawnMessage = "Respawned successfully!", --Message sent when player respawns.
+        RespawnErrorMessage = "^1ERROR: You cannot respawn, you still have ^7{TIME_LEFT} ^1remaining...", --Message sent to user when they can't respawn. Use {TIME_LEFT} to show how long they have to respawn.
         ReviveCommand = "revive",
-        reviveOthersAcePermission = "Badssentials.Revive",
-        bypassReviveAcePermission = "Badssentials.Bypass.Revive",
-        bypassRespawnAcePermission = "Badssentials.Bypass.Respawn",
+        ReviveMessage = "Revived successfully!", --Message sent when player revives.
+        ReviveErrorMessage = "^1ERROR: You cannot revive, you still have ^7{TIME_LEFT} ^1remaining...",
+        ReviveOthersAcePermission = "Badssentials.Revive",
+        ReviveOthersMessage = "You have been revived by ^5{PLAYER_NAME}^0.", --Message sent to user after being revived by someone else. Use {PLAYER_NAME} for the staff member's name.
+        BypassReviveAcePermission = "Badssentials.Bypass.Revive",
+        BypassRespawnAcePermission = "Badssentials.Bypass.Respawn",
         RespawnLocations = {
             DefaultLocation = {
                 --Sandy Shores Medical Center
@@ -61,7 +67,7 @@ Config = {
         ToggleHUDCommand = "toggle-hud",
         Peacetime = "peacetime", -- Peacetime & PT both control the peacetime system.
         PT = "pt",
-        ptAcePermission = "Badssentials.PeaceTime", --The ace permission required to run PT or Peacetime command.
+        PeacetimeAcePermission = "Badssentials.PeaceTime", --The ace permission required to run PT or Peacetime command.
     },
     Displays = {
 		['Noir RP Server | Discord'] = {
