@@ -1,17 +1,53 @@
 --------------------
 --- Badssentials ---
 --------------------
+
+--@desc Sends a message to the client
+--@param src The player you want to send the message to
+--@param msg The message to send
 function sendMsg(src, msg)
   TriggerClientEvent('chat:addMessage', src, {args = {Config.Prefix .. msg} });
+end
+
+--@desc Checks if a passed ID is an online player
+--@param playerID The ID you want to check.
+function IsPlayerOnline(playerID)
+  local playerFound = false
+
+  for _, ID in pairs(GetPlayers()) do
+    if tonumber(ID) == tonumber(playerID) then
+      playerFound = true
+    end
+  end
+
+  if playerFound then
+    return true
+  else
+    return false
+  end
+end
+
+-- @desc Check if value is an integer
+-- @param number the variable you want to check 
+function IsInt(number)
+  if number == tostring(tonumber(number)) then
+      return true
+  else
+      return false
+  end
 end
 
 function GetAOP()
   return currentAOP
 end
 
+function GetPeaceTimeStatus()
+  return peacetime
+end
+
 RegisterCommand(Config.ScreenAffects.AnnounceCommand, function(source, args, raw) 
   local src = source;
-  if IsPlayerAceAllowed(src, "Badssentials.Announce") then 
+  if IsPlayerAceAllowed(src, Config.ScreenAffects.acePermission) then 
     -- Allowed to use /announce 
     if #args > 0 then 
       local ann = table.concat(args, " ");
@@ -49,16 +85,25 @@ peacetime = false;
 currentAOP = Config.AOPSystem.DefaultAOP; -- By default 
 RegisterCommand(Config.AOPSystem.AOPCommand, function(source, args, rawCommand)
   local src = source;
-  if IsPlayerAceAllowed(src, "Badssentials.AOP") then 
+  if IsPlayerAceAllowed(src, Config.AOPSystem.acePermission) then 
     -- Allowed to use /aop <aop>
     if #args > 0 then 
       currentAOP = table.concat(args, " ");
       sendMsg(src, "You have set the AOP to: " .. currentAOP);
       TriggerClientEvent('Badssentials:SetAOP', -1, currentAOP);
+
+      if Config.AOPSystem.aopAnnouncement ~= nil then
+        local aopAnnouncement = Config.AOPSystem.aopAnnouncement
+        aopAnnouncement = aopAnnouncement:gsub("{NEW_AOP}", currentAOP)
+
+        sendMsg(-1, aopAnnouncement)
+      end
     else 
       -- Not enough arguments
       sendMsg(src, "^1ERROR: Proper usage: /aop <zone>");
     end
+  else
+    sendMsg(src, "^1ERROR: You do not have permission to change the AOP!");
   end
 end)
 timersRev = {}
@@ -88,14 +133,13 @@ AddEventHandler("Badssentials:DeathTrigger", function()
 end)
 RegisterCommand(Config.ReviveSystem.ReviveCommand, function(source, args, rawCommand)
   local src = source;
-  if #args == 0 then 
+  if #args == 0 or tonumber(args[1]) == src then 
     -- Revive themselves
     if timersRev[src] ~= nil and timersRev[src] >= 0 then 
       -- They are dead and have a timer 
-      if IsPlayerAceAllowed(src, "Badssentials.Bypass.Revive") then 
+      if IsPlayerAceAllowed(src, Config.ReviveSystem.bypassReviveAcePermission) then 
         -- Can bypass reviving
         TriggerClientEvent('Badssentials:RevivePlayer', src);
-        sendMsg(src, "You have been revived successfully!");
       else 
         -- Cannot bypass reviving, send they need to wait and what their timer is at 
         sendMsg(src, '^1ERROR: You cannot revive, you still have ^7' .. timersRev[src] .. ' ^1seconds remaining...');
@@ -103,14 +147,27 @@ RegisterCommand(Config.ReviveSystem.ReviveCommand, function(source, args, rawCom
     else 
       -- Their timer is expired or not valid 
       TriggerClientEvent('Badssentials:RevivePlayer', src); 
-      sendMsg(src, "You have been revived successfully!");
     end
   else 
     -- They are reviving someone else 
-    if tonumber(args[1]) ~= src then 
-      TriggerClientEvent('Badssentials:RevivePlayer', tonumber(args[1]));
-      sendMsg(src, "You have revived player ^5" .. GetPlayerName(tonumber(args[1])) .. " ^3successfully!");
-      sendMsg(tonumber(args[1]), "You have been revived successfully by ^5" .. GetPlayerName(src) .. "^3!");
+    if IsPlayerAceAllowed(src, Config.ReviveSystem.reviveOthersAcePermission) then
+      --Checks if arg is number
+      if IsInt(args[1]) then 
+        --checks if a player with ID is online
+        if IsPlayerOnline(args[1]) then
+          TriggerClientEvent('Badssentials:RevivePlayer', tonumber(args[1]));
+          sendMsg(src, "You have revived player ^5" .. GetPlayerName(tonumber(args[1])) .. " ^3successfully!");
+          sendMsg(tonumber(args[1]), "You have been revived successfully by ^5" .. GetPlayerName(src) .. "^3!");
+        else
+          --Player isn't online
+          sendMsg(src, "^1ERROR: No player with that specified ID is online!");
+        end
+      else
+        --Passed Arg is not integer
+        sendMsg(src, "^1ERROR: You must specify a valid server ID!");
+      end
+    else
+      sendMsg(src, '^1ERROR: You do not have permission to revive others!');
     end
   end
 end)
@@ -120,10 +177,9 @@ RegisterCommand(Config.ReviveSystem.RespawnCommand, function(source, args, rawCo
     -- Respawn themselves
     if timersRes[src] ~= nil and timersRes[src] >= 0 then 
       -- They are dead and have a timer 
-      if IsPlayerAceAllowed(src, "Badssentials.Bypass.Respawn") then 
+      if IsPlayerAceAllowed(src, Config.ReviveSystem.bypassRespawnAcePermission) then 
         -- Can bypass reviving
         TriggerClientEvent('Badssentials:RespawnPlayer', src);
-        sendMsg(src, "You have respawned successfully!");
       else 
         -- Cannot bypass reviving, send they need to wait and what their timer is at 
         sendMsg(src, '^1ERROR: You cannot respawn, you still have ^7' .. timersRes[src] .. ' ^1seconds remaining...');
@@ -131,7 +187,6 @@ RegisterCommand(Config.ReviveSystem.RespawnCommand, function(source, args, rawCo
     else 
       -- Their timer is expired or not valid 
       TriggerClientEvent('Badssentials:RespawnPlayer', src); 
-      sendMsg(src, "You have respawned successfully!");
     end
   end 
 end)
@@ -139,7 +194,7 @@ end)
 
 RegisterCommand(Config.Misc.Peacetime, function(source, args, rawCommand)
   local src = source;
-  if IsPlayerAceAllowed(src, "Badssentials.PeaceTime") then
+  if IsPlayerAceAllowed(src, Config.Misc.ptAcePermission) then
     peacetime = not peacetime;
     TriggerClientEvent('Badssentials:SetPT', -1, peacetime);
     if peacetime then 
@@ -151,7 +206,7 @@ RegisterCommand(Config.Misc.Peacetime, function(source, args, rawCommand)
 end)
 RegisterCommand(Config.Misc.PT, function(source, args, rawCommand)
   local src = source;
-  if IsPlayerAceAllowed(src, "Badssentials.PeaceTime") then
+  if IsPlayerAceAllowed(src, Config.Misc.ptAcePermission) then
     peacetime = not peacetime;
     TriggerClientEvent('Badssentials:SetPT', -1, peacetime);
     if peacetime then 

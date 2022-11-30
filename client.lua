@@ -18,6 +18,11 @@ function Draw2DText(x, y, text, scale, center)
     AddTextComponentString(text)
     DrawText(x, y)
 end
+
+function IsDisplaysHidden()
+	return displaysHidden
+end
+
 id = GetPlayerServerId(PlayerId())
 ann = nil;
 announcement = false;
@@ -144,15 +149,33 @@ AddEventHandler('Badssentials:RevivePlayer', function()
 	local ped = GetPlayerPed(-1);
 	if IsEntityDead(ped) then 
 		revivePed(ped);
+		TriggerEvent('chat:addMessage', {args = {Config.Prefix .. "Revived successfully!"} });
 	end
 end)
 RegisterNetEvent('Badssentials:RespawnPlayer')
 AddEventHandler('Badssentials:RespawnPlayer', function()
 	local ped = GetPlayerPed(-1);
-	if IsEntityDead(ped) then 
-		revivePed(ped);
-		SetEntityCoords(ped, 1828.43, 3693.01, 34.22, false, false, false, false);
-		SetEntityCoords(entity, xPos, yPos, zPos, xAxis, yAxis, zAxis, clearArea)
+	if IsEntityDead(ped) then
+		local foundRespawnLocation = nil
+
+		--loops through respawn locations and finds one that matches current AOP
+		for i, v in pairs(Config.ReviveSystem.RespawnLocations) do
+			if i == currentAOP then
+				foundRespawnLocation = true
+				revivePed(ped);
+				SetEntityCoords(ped, v.x, v.y, v.z, false, false, false, false);
+				SetEntityCoords(entity, xPos, yPos, zPos, xAxis, yAxis, zAxis, clearArea)
+				TriggerEvent('chat:addMessage', {args = {Config.Prefix .. "Respawned successfully!"} });
+			end
+		end
+
+		--sends player to defualt spawn location if currentAOP doesn't match when in the table.
+		if foundRespawnLocation ~= true then
+			revivePed(ped);
+			SetEntityCoords(ped, Config.ReviveSystem.RespawnLocations.DefaultLocation.x, Config.ReviveSystem.RespawnLocations.DefaultLocation.y, Config.ReviveSystem.RespawnLocations.DefaultLocation.z, false, false, false, false);
+			SetEntityCoords(entity, xPos, yPos, zPos, xAxis, yAxis, zAxis, clearArea)
+			TriggerEvent('chat:addMessage', {args = {Config.Prefix .. "Respawned successfully!"} });
+		end
 	end
 end)
 tickDegree = 0;
@@ -210,6 +233,7 @@ RegisterCommand(Config.Misc.ToggleHUDCommand, function()
 		DisplayRadar(true);
 	end
 end)
+
 RegisterCommand(Config.Misc.PostalCommand, function(source, args, raw)
 	if #args > 0 then 
 		local postalCoords = getPostalCoords(args[1]);
