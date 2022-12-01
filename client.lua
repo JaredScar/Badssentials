@@ -120,10 +120,14 @@ if Config.ReviveSystem.enable then
 			Wait(0);
 			local ped = GetPlayerPed(-1);
 			if Config.ScreenAffects.DeathScreen then
-				if IsEntityDead(ped) then 
-					Draw2DText(.5, .3, "~r~You are knocked out or dead...", 1.0, 1);
-					Draw2DText(.5, .4, "~b~You may use ~g~/revive ~b~if you were knocked out", 1.0, 1);
-					Draw2DText(.5, .5, "~b~If you are dead, you must use ~g~/respawn", 1.0, 1);
+				if IsEntityDead(ped) then
+					--loops through all the Death Screen displays
+					for _, v in pairs(Config.ScreenAffects.DeathScreenDisplaySettings) do
+						local text = v.text
+						text = text:gsub("{REVIVE_COMMAND}", '/' .. Config.ReviveSystem.ReviveCommand)
+						text = text:gsub("{RESPAWN_COMMAND}", '/' .. Config.ReviveSystem.RespawnCommand)
+						Draw2DText(v.x, v.y, text, v.scale, v.center)
+					end
 				end
 			end
 			if IsEntityDead(ped) and not deadCheck then

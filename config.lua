@@ -3,13 +3,42 @@ Config = {
 	ScreenAffects = {
 		AnnounceCommand = "announce",
         AcePermission = "Badssentials.Announce", --The ace permission need to run the AnnounceCommand.
-		AnnouncementHeader = '~b~[~p~FIRP Announcement~b~]',
+		AnnouncementHeader = '~b~[~p~Announcement~b~]',
 		AnnouncementPlacement = 0, -- Set to 0 for top or .3 for middle of screen
 		AnnounceDisplayTime = 15, -- How many seconds should announcements display for?
-		DeathScreen = true, -- Enable/Disable the death screen. (Enabled by default.)
+		DeathScreen = true, -- Enable/Disable the death screen. (Enabled by default.) (ReviveSystem.enable must also be true!)
+        DeathScreenDisplaySettings = { 
+            --[[
+            Display used when DeathScreen = true
+            Available Placeholders;
+            {REVIVE_COMMAND} | Returns the Set Revive Command.
+            {RESPAWN_COMMAND} | Returns the set respawn command.
+            ]]
+            ['Line 1'] = {
+                text = "~r~You are knocked out or dead...",
+                x = .5,
+                y = .05,
+                scale = .8,
+                center = true,
+            },
+            ['Line 2'] = {
+                text = "~b~If you were knocked out, you may use ~g~{REVIVE_COMMAND}~b~!",
+                x = .5,
+                y = .1,
+                scale = .8,
+                center = true,
+            },
+            ['Line 3'] = {
+                text = "~b~If you are dead, you must use ~g~{RESPAWN_COMMAND}~b~!",
+                x = .5,
+                y = .15,
+                scale = .8,
+                center = true,
+            },
+        },
 	},
     AOPSystem = {
-        DefaultAOP = "Los Santos",
+        DefaultAOP = "Sandy Shores",
         AOPCommand = "aop",
         --Announcement sent to players when AOP is changed. Set to "", or nil to disable.
         AOP_Announcement = "The AOP has changed to '{NEW_AOP}'. Finish your current scene(s) and head to {NEW_AOP}. ^1Failure to do so could lead to punishment!^0",
@@ -21,10 +50,10 @@ Config = {
         Respawn_Delay = 60, -- Set to 0 to disable
         RespawnCommand = "respawn",
         RespawnMessage = "Respawned successfully!", --Message sent when player respawns.
-        RespawnErrorMessage = "^1ERROR: You cannot respawn, you still have ^7{TIME_LEFT} ^1remaining...", --Message sent to user when they can't respawn. Use {TIME_LEFT} to show how long they have to respawn.
+        RespawnErrorMessage = "^1ERROR: You cannot respawn, you still have ^7{RESPAWN_TIME_LEFT} ^1remaining...", --Message sent to user when they can't respawn. Use {TIME_LEFT} to show how long they have to respawn.
         ReviveCommand = "revive",
         ReviveMessage = "Revived successfully!", --Message sent when player revives.
-        ReviveErrorMessage = "^1ERROR: You cannot revive, you still have ^7{TIME_LEFT} ^1remaining...",
+        ReviveErrorMessage = "^1ERROR: You cannot revive, you still have ^7{REVIVE_TIME_LEFT} ^1remaining...",
         ReviveOthersAcePermission = "Badssentials.Revive",
         ReviveOthersMessage = "You have been revived by ^5{PLAYER_NAME}^0.", --Message sent to user after being revived by someone else. Use {PLAYER_NAME} for the staff member's name.
         BypassReviveAcePermission = "Badssentials.Bypass.Revive",

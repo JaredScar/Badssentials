@@ -157,7 +157,7 @@ if Config.ReviveSystem.enable then
           end
 
           local errorMessage = Config.ReviveSystem.ReviveErrorMessage
-          errorMessage = errorMessage:gsub("{TIME_LEFT}", timeLeft)
+          errorMessage = errorMessage:gsub("{REVIVE_TIME_LEFT}", timeLeft)
 
           sendMsg(src, errorMessage);
         end
@@ -210,7 +210,7 @@ if Config.ReviveSystem.enable then
           end
 
           local errorMessage = Config.ReviveSystem.RespawnErrorMessage
-          errorMessage = errorMessage:gsub("{TIME_LEFT}", timeLeft)
+          errorMessage = errorMessage:gsub("{RESPAWN_TIME_LEFT}", timeLeft)
 
           sendMsg(src, errorMessage);
         end
