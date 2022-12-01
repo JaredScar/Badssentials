@@ -7,8 +7,13 @@ client_script "client.lua"
 
 server_script "server.lua"
 
-shared_script "config.lua"
+shared_scripts {
+    "config.lua",
+    "postals.lua"
+}
 
 exports {
-    "GetAOP"
+    "GetAOP",
+    "GetPeaceTimeStatus",
+    "IsDisplaysHidden"
 }

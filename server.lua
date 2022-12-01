@@ -1,17 +1,58 @@
 --------------------
 --- Badssentials ---
 --------------------
+
+--@desc Sends a message to the client
+--@param src The player you want to send the message to
+--@param msg The message to send
 function sendMsg(src, msg)
   TriggerClientEvent('chat:addMessage', src, {args = {Config.Prefix .. msg} });
+end
+
+--@desc Checks if a passed ID is an online player
+--@param playerID The ID you want to check.
+function IsPlayerOnline(playerID)
+  local playerFound = false
+
+  for _, ID in pairs(GetPlayers()) do
+    if tonumber(ID) == tonumber(playerID) then
+      playerFound = true
+    end
+  end
+
+  if playerFound then
+    return true
+  else
+    return false
+  end
+end
+
+-- @desc Check if value is an integer
+-- @param number the variable you want to check 
+function IsInt(number)
+  if number == tostring(tonumber(number)) then
+      return true
+  else
+      return false
+  end
 end
 
 function GetAOP()
   return currentAOP
 end
 
+function GetPeaceTimeStatus()
+  return peacetime
+end
+
+--Makes sure resource name is 'Badssentials' so any scripts using exports won't throw errors.
+if GetCurrentResourceName() ~= "Badssentials" then
+  print("[" .. GetCurrentResourceName() .. "] ^3WARNING: This resource needs to be named '^0Badssentials^3' in order for everything to function correctly! Please change this resource's name back to '^0Badssentials^3'!")
+end
+
 RegisterCommand(Config.ScreenAffects.AnnounceCommand, function(source, args, raw) 
   local src = source;
-  if IsPlayerAceAllowed(src, "Badssentials.Announce") then 
+  if IsPlayerAceAllowed(src, Config.ScreenAffects.AcePermission) then 
     -- Allowed to use /announce 
     if #args > 0 then 
       local ann = table.concat(args, " ");
@@ -49,16 +90,25 @@ peacetime = false;
 currentAOP = Config.AOPSystem.DefaultAOP; -- By default 
 RegisterCommand(Config.AOPSystem.AOPCommand, function(source, args, rawCommand)
   local src = source;
-  if IsPlayerAceAllowed(src, "Badssentials.AOP") then 
+  if IsPlayerAceAllowed(src, Config.AOPSystem.acePermission) then 
     -- Allowed to use /aop <aop>
     if #args > 0 then 
       currentAOP = table.concat(args, " ");
       sendMsg(src, "You have set the AOP to: " .. currentAOP);
       TriggerClientEvent('Badssentials:SetAOP', -1, currentAOP);
+
+      if Config.AOPSystem.aopAnnouncement ~= nil then
+        local aopAnnouncement = Config.AOPSystem.AOP_Announcement
+        aopAnnouncement = aopAnnouncement:gsub("{NEW_AOP}", currentAOP)
+
+        sendMsg(-1, aopAnnouncement)
+      end
     else 
       -- Not enough arguments
       sendMsg(src, "^1ERROR: Proper usage: /aop <zone>");
     end
+  else
+    sendMsg(src, "^1ERROR: You do not have permission to change the AOP!");
   end
 end)
 timersRev = {}
@@ -80,66 +130,102 @@ Citizen.CreateThread(function()
     end
   end
 end)
-RegisterNetEvent("Badssentials:DeathTrigger")
-AddEventHandler("Badssentials:DeathTrigger", function()
-  local src = source;
-  timersRev[src] = Config.ReviveSystem.Revive_Delay;
-  timersRes[src] = Config.ReviveSystem.Respawn_Delay;
-end)
-RegisterCommand(Config.ReviveSystem.ReviveCommand, function(source, args, rawCommand)
-  local src = source;
-  if #args == 0 then 
-    -- Revive themselves
-    if timersRev[src] ~= nil and timersRev[src] >= 0 then 
-      -- They are dead and have a timer 
-      if IsPlayerAceAllowed(src, "Badssentials.Bypass.Revive") then 
-        -- Can bypass reviving
-        TriggerClientEvent('Badssentials:RevivePlayer', src);
-        sendMsg(src, "You have been revived successfully!");
+
+if Config.ReviveSystem.enable then
+  RegisterNetEvent("Badssentials:DeathTrigger")
+  AddEventHandler("Badssentials:DeathTrigger", function()
+    local src = source;
+    timersRev[src] = Config.ReviveSystem.Revive_Delay;
+    timersRes[src] = Config.ReviveSystem.Respawn_Delay;
+  end)
+  RegisterCommand(Config.ReviveSystem.ReviveCommand, function(source, args, rawCommand)
+    local src = source;
+    if #args == 0 or tonumber(args[1]) == src then 
+      -- Revive themselves
+      if timersRev[src] ~= nil and timersRev[src] >= 0 then 
+        -- They are dead and have a timer 
+        if IsPlayerAceAllowed(src, Config.ReviveSystem.BypassReviveAcePermission) then 
+          -- Can bypass reviving
+          TriggerClientEvent('Badssentials:RevivePlayer', src);
+        else 
+          -- Cannot bypass reviving, send they need to wait and what their timer is at 
+          local timeLeft = timersRev[src]
+          if timeLeft >= 60 then
+            timeLeft = math.ceil(timeLeft / 60) .. " minute(s)" 
+          else
+            timeLeft = timeLeft .. " seconds"
+          end
+
+          local errorMessage = Config.ReviveSystem.ReviveErrorMessage
+          errorMessage = errorMessage:gsub("{REVIVE_TIME_LEFT}", timeLeft)
+
+          sendMsg(src, errorMessage);
+        end
       else 
-        -- Cannot bypass reviving, send they need to wait and what their timer is at 
-        sendMsg(src, '^1ERROR: You cannot revive, you still have ^7' .. timersRev[src] .. ' ^1seconds remaining...');
+        -- Their timer is expired or not valid 
+        TriggerClientEvent('Badssentials:RevivePlayer', src); 
       end
     else 
-      -- Their timer is expired or not valid 
-      TriggerClientEvent('Badssentials:RevivePlayer', src); 
-      sendMsg(src, "You have been revived successfully!");
-    end
-  else 
-    -- They are reviving someone else 
-    if tonumber(args[1]) ~= src then 
-      TriggerClientEvent('Badssentials:RevivePlayer', tonumber(args[1]));
-      sendMsg(src, "You have revived player ^5" .. GetPlayerName(tonumber(args[1])) .. " ^3successfully!");
-      sendMsg(tonumber(args[1]), "You have been revived successfully by ^5" .. GetPlayerName(src) .. "^3!");
-    end
-  end
-end)
-RegisterCommand(Config.ReviveSystem.RespawnCommand, function(source, args, rawCommand)
-  local src = source;
-  if #args == 0 then 
-    -- Respawn themselves
-    if timersRes[src] ~= nil and timersRes[src] >= 0 then 
-      -- They are dead and have a timer 
-      if IsPlayerAceAllowed(src, "Badssentials.Bypass.Respawn") then 
-        -- Can bypass reviving
-        TriggerClientEvent('Badssentials:RespawnPlayer', src);
-        sendMsg(src, "You have respawned successfully!");
-      else 
-        -- Cannot bypass reviving, send they need to wait and what their timer is at 
-        sendMsg(src, '^1ERROR: You cannot respawn, you still have ^7' .. timersRes[src] .. ' ^1seconds remaining...');
+      -- They are reviving someone else 
+      if IsPlayerAceAllowed(src, Config.ReviveSystem.ReviveOthersAcePermission) then
+        --Checks if arg is number
+        if IsInt(args[1]) then 
+          --checks if a player with ID is online
+          if IsPlayerOnline(args[1]) then
+            local reviveMessage = Config.ReviveSystem.ReviveOthersMessage
+            reviveMessage = reviveMessage:gsub("{PLAYER_NAME}", GetPlayerName(src))
+
+            TriggerClientEvent('Badssentials:RevivePlayer', tonumber(args[1]));
+            sendMsg(src, "You have revived player ^5" .. GetPlayerName(tonumber(args[1])) .. " ^3successfully!");
+            sendMsg(tonumber(args[1]), reviveMessage);
+          else
+            --Player isn't online
+            sendMsg(src, "^1ERROR: No player with that specified ID is online!");
+          end
+        else
+          --Passed Arg is not integer
+          sendMsg(src, "^1ERROR: You must specify a valid server ID!");
+        end
+      else
+        sendMsg(src, '^1ERROR: You do not have permission to revive others!');
       end
-    else 
-      -- Their timer is expired or not valid 
-      TriggerClientEvent('Badssentials:RespawnPlayer', src); 
-      sendMsg(src, "You have respawned successfully!");
     end
-  end 
-end)
+  end)
+  RegisterCommand(Config.ReviveSystem.RespawnCommand, function(source, args, rawCommand)
+    local src = source;
+    if #args == 0 then 
+      -- Respawn themselves
+      if timersRes[src] ~= nil and timersRes[src] >= 0 then 
+        -- They are dead and have a timer 
+        if IsPlayerAceAllowed(src, Config.ReviveSystem.BypassRespawnAcePermission) then 
+          -- Can bypass reviving
+          TriggerClientEvent('Badssentials:RespawnPlayer', src);
+        else 
+          -- Cannot bypass reviving, send they need to wait and what their timer is at 
+          local timeLeft = timersRes[src]
+          if timeLeft >= 60 then
+            timeLeft = math.ceil(timeLeft / 60) .. " minute(s)" 
+          else
+            timeLeft = timeLeft .. " seconds"
+          end
+
+          local errorMessage = Config.ReviveSystem.RespawnErrorMessage
+          errorMessage = errorMessage:gsub("{RESPAWN_TIME_LEFT}", timeLeft)
+
+          sendMsg(src, errorMessage);
+        end
+      else 
+        -- Their timer is expired or not valid 
+        TriggerClientEvent('Badssentials:RespawnPlayer', src); 
+      end
+    end 
+  end)
+end
 
 
 RegisterCommand(Config.Misc.Peacetime, function(source, args, rawCommand)
   local src = source;
-  if IsPlayerAceAllowed(src, "Badssentials.PeaceTime") then
+  if IsPlayerAceAllowed(src, Config.Misc.PeacetimeAcePermission) then
     peacetime = not peacetime;
     TriggerClientEvent('Badssentials:SetPT', -1, peacetime);
     if peacetime then 
@@ -151,7 +237,7 @@ RegisterCommand(Config.Misc.Peacetime, function(source, args, rawCommand)
 end)
 RegisterCommand(Config.Misc.PT, function(source, args, rawCommand)
   local src = source;
-  if IsPlayerAceAllowed(src, "Badssentials.PeaceTime") then
+  if IsPlayerAceAllowed(src, Config.Misc.PeacetimeAcePermission) then
     peacetime = not peacetime;
     TriggerClientEvent('Badssentials:SetPT', -1, peacetime);
     if peacetime then 

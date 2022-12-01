@@ -18,6 +18,11 @@ function Draw2DText(x, y, text, scale, center)
     AddTextComponentString(text)
     DrawText(x, y)
 end
+
+function IsDisplaysHidden()
+	return displaysHidden
+end
+
 id = GetPlayerServerId(PlayerId())
 ann = nil;
 announcement = false;
@@ -107,54 +112,80 @@ AddEventHandler('onClientMapStart', function()
 	exports.spawnmanager:setAutoSpawn(false)
 	Citizen.Trace("RPRevive: Autospawn is disabled.")
 end)
-deadCheck = false;
-Citizen.CreateThread(function()
-	while true do 
-		Wait(0);
-		local ped = GetPlayerPed(-1);
-		if Config.ScreenAffects.DeathScreen then
-			if IsEntityDead(ped) then 
-				Draw2DText(.5, .3, "~r~You are knocked out or dead...", 1.0, 1);
-				Draw2DText(.5, .4, "~b~You may use ~g~/revive ~b~if you were knocked out", 1.0, 1);
-				Draw2DText(.5, .5, "~b~If you are dead, you must use ~g~/respawn", 1.0, 1);
+
+if Config.ReviveSystem.enable then
+	deadCheck = false;
+	Citizen.CreateThread(function()
+		while true do 
+			Wait(0);
+			local ped = GetPlayerPed(-1);
+			if Config.ScreenAffects.DeathScreen then
+				if IsEntityDead(ped) then
+					--loops through all the Death Screen displays
+					for _, v in pairs(Config.ScreenAffects.DeathScreenDisplaySettings) do
+						local text = v.text
+						text = text:gsub("{REVIVE_COMMAND}", '/' .. Config.ReviveSystem.ReviveCommand)
+						text = text:gsub("{RESPAWN_COMMAND}", '/' .. Config.ReviveSystem.RespawnCommand)
+						Draw2DText(v.x, v.y, text, v.scale, v.center)
+					end
+				end
+			end
+			if IsEntityDead(ped) and not deadCheck then
+				deadCheck = true;
+				TriggerServerEvent("Badssentials:DeathTrigger");
+			else 
+				if not IsEntityDead(ped) then 
+					deadCheck = false;
+					StopScreenEffect("DeathFailOut")
+				end 
 			end
 		end
-		if IsEntityDead(ped) and not deadCheck then
-			deadCheck = true;
-			TriggerServerEvent("Badssentials:DeathTrigger");
-		else 
-			if not IsEntityDead(ped) then 
-				deadCheck = false;
-				StopScreenEffect("DeathFailOut")
-			end 
+	end)
+	function revivePed(ped)
+		local playerPos = GetEntityCoords(ped, true)
+		isDead = false
+		timerCount = reviveWait
+		NetworkResurrectLocalPlayer(playerPos, true, true, false)
+		SetPlayerInvincible(ped, false)
+		ClearPedBloodDamage(ped)
+		deadCheck = false;
+	end
+	RegisterNetEvent('Badssentials:RevivePlayer')
+	AddEventHandler('Badssentials:RevivePlayer', function()
+		local ped = GetPlayerPed(-1);
+		if IsEntityDead(ped) then 
+			revivePed(ped);
+			TriggerEvent('chat:addMessage', {args = {Config.Prefix .. "Revived successfully!"} });
 		end
-	end
-end)
-function revivePed(ped)
-    local playerPos = GetEntityCoords(ped, true)
-    isDead = false
-    timerCount = reviveWait
-    NetworkResurrectLocalPlayer(playerPos, true, true, false)
-    SetPlayerInvincible(ped, false)
-    ClearPedBloodDamage(ped)
-    deadCheck = false;
+	end)
+	RegisterNetEvent('Badssentials:RespawnPlayer')
+	AddEventHandler('Badssentials:RespawnPlayer', function()
+		local ped = GetPlayerPed(-1);
+		if IsEntityDead(ped) then
+			local foundRespawnLocation = nil
+
+			--loops through respawn locations and finds one that matches current AOP
+			for i, v in pairs(Config.ReviveSystem.RespawnLocations) do
+				if i == currentAOP then
+					foundRespawnLocation = true
+					revivePed(ped);
+					SetEntityCoords(ped, v.x, v.y, v.z, false, false, false, false);
+					SetEntityCoords(entity, xPos, yPos, zPos, xAxis, yAxis, zAxis, clearArea)
+					TriggerEvent('chat:addMessage', {args = {Config.Prefix .. Config.ReviveSystem.RespawnMessage} });
+				end
+			end
+
+			--sends player to defualt spawn location if currentAOP doesn't match when in the table.
+			if foundRespawnLocation ~= true then
+				revivePed(ped);
+				SetEntityCoords(ped, Config.ReviveSystem.RespawnLocations.DefaultLocation.x, Config.ReviveSystem.RespawnLocations.DefaultLocation.y, Config.ReviveSystem.RespawnLocations.DefaultLocation.z, false, false, false, false);
+				SetEntityCoords(entity, xPos, yPos, zPos, xAxis, yAxis, zAxis, clearArea)
+				TriggerEvent('chat:addMessage', {args = {Config.Prefix .. Config.ReviveSystem.ReviveMessage} });
+			end
+		end
+	end)
 end
-RegisterNetEvent('Badssentials:RevivePlayer')
-AddEventHandler('Badssentials:RevivePlayer', function()
-	local ped = GetPlayerPed(-1);
-	if IsEntityDead(ped) then 
-		revivePed(ped);
-	end
-end)
-RegisterNetEvent('Badssentials:RespawnPlayer')
-AddEventHandler('Badssentials:RespawnPlayer', function()
-	local ped = GetPlayerPed(-1);
-	if IsEntityDead(ped) then 
-		revivePed(ped);
-		SetEntityCoords(ped, 1828.43, 3693.01, 34.22, false, false, false, false);
-		SetEntityCoords(entity, xPos, yPos, zPos, xAxis, yAxis, zAxis, clearArea)
-	end
-end)
+
 tickDegree = 0;
 local nearest = nil;
 local postals = Postals;
@@ -210,6 +241,7 @@ RegisterCommand(Config.Misc.ToggleHUDCommand, function()
 		DisplayRadar(true);
 	end
 end)
+
 RegisterCommand(Config.Misc.PostalCommand, function(source, args, raw)
 	if #args > 0 then 
 		local postalCoords = getPostalCoords(args[1]);
