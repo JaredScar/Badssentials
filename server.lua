@@ -90,7 +90,7 @@ peacetime = false;
 currentAOP = Config.AOPSystem.DefaultAOP; -- By default 
 RegisterCommand(Config.AOPSystem.AOPCommand, function(source, args, rawCommand)
   local src = source;
-  if IsPlayerAceAllowed(src, Config.AOPSystem.acePermission) then 
+  if IsPlayerAceAllowed(src, Config.AOPSystem.AOP_AcePermission) then 
     -- Allowed to use /aop <aop>
     if #args > 0 then 
       currentAOP = table.concat(args, " ");
