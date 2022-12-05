@@ -105,7 +105,7 @@ RegisterCommand(Config.AOPSystem.AOPCommand, function(source, args, rawCommand)
       end
     else 
       -- Not enough arguments
-      sendMsg(src, "^1ERROR: Proper usage: /aop <zone>");
+      sendMsg(src, "^1ERROR: Proper usage: /" .. Config.AOPSystem.AOPCommand .. " <zone>");
     end
   else
     sendMsg(src, "^1ERROR: You do not have permission to change the AOP!");
