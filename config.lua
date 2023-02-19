@@ -137,7 +137,7 @@ Config = {
 		['Time & Date'] = {
 			x = .165,
 			y = .93,
-			display = "~g~Time (EST): ~w~{EST_TIME} ~g~| Date: ~w~{US_MONTH}~g~/~w~{US_DAY}~g~/~w~{US_YEAR}",
+			display = "~g~Time: ~w~{OS_TIME} ~g~| Date: ~w~{US_MONTH}~g~/~w~{US_DAY}~g~/~w~{US_YEAR}",
 			textScale = .4,
 			enabled = true
 		},
