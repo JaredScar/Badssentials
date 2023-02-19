@@ -66,8 +66,8 @@ Citizen.CreateThread(function()
     Wait(1000);
     TriggerClientEvent('Badssentials:SetAOP', -1, currentAOP);
     TriggerClientEvent('Badssentials:SetPT', -1, peacetime);
-    local time = format_time(os.time(), "%H:%M", "+01:00", "EST");
-    local date = format_time(os.time(), "%m %d %Y", "+01:00", "EST");
+    local time = format_time(os.time(), "%H:%M");
+    local date = format_time(os.time(), "%m %d %Y");
     local timeHour = split(time, ":")[1]
     local dateData = split(date, " ");
     TriggerClientEvent('Badssentials:SetMonth', -1, dateData[1])
