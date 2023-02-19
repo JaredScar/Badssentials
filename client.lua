@@ -330,7 +330,7 @@ Citizen.CreateThread(function()
 					disp = disp:gsub("{COMPASS}", degree);
 				end
 				disp = disp:gsub("{ID}", id);
-				disp = disp:gsub("{EST_TIME}", currentTime);
+				disp = disp:gsub("{OS_TIME}", currentTime);
 				disp = disp:gsub("{US_DAY}", currentDay);
 				disp = disp:gsub("{US_MONTH}", currentMonth);
 				disp = disp:gsub("{US_YEAR}", currentYear);
