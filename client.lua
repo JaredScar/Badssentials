@@ -231,6 +231,17 @@ RegisterNetEvent('Badssentials:SetPT')
 AddEventHandler('Badssentials:SetPT', function(pt)
 	peacetime = pt;
 end)
+RegisterNetEvent('Badssentials:SetPrioStatus')
+AddEventHandler('Badssentials:SetPrioStatus', function(prio)
+	if prio == "inProgress" then
+		prioStatus = "Priority in Progress"
+	elseif prio == "onHold" then
+		prioStatus = "Priorities are on Hold"
+	else
+		prioStatus = prio .. " mins";
+	end
+end)
+prioStatus = "0 mins"
 displaysHidden = false;
 RegisterCommand(Config.Misc.ToggleHUDCommand, function()
 	displaysHidden = not displaysHidden;
@@ -335,6 +346,9 @@ Citizen.CreateThread(function()
 				disp = disp:gsub("{US_MONTH}", currentMonth);
 				disp = disp:gsub("{US_YEAR}", currentYear);
 				disp = disp:gsub("{CURRENT_AOP}", currentAOP);
+				if (disp:find("{PRIO_STATUS}")) then 
+					disp = disp:gsub("{PRIO_STATUS}", prioStatus);
+				end			
 				if (disp:find("{PEACETIME_STATUS}")) then 
 					if peacetime then 
 						disp = disp:gsub("{PEACETIME_STATUS}", "~g~Enabled")

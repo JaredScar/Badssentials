@@ -66,6 +66,7 @@ Citizen.CreateThread(function()
     Wait(1000);
     TriggerClientEvent('Badssentials:SetAOP', -1, currentAOP);
     TriggerClientEvent('Badssentials:SetPT', -1, peacetime);
+    TriggerClientEvent('Badssentials:SetPrioStatus', -1, exports['Badger-Priorities'].GetPrioStatus());
     local time = format_time(os.time(), "%H:%M");
     local date = format_time(os.time(), "%m %d %Y");
     local timeHour = split(time, ":")[1]
