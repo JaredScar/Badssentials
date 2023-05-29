@@ -126,6 +126,7 @@ Note: All Times are returned as Eastern Standard Time.
 {US_DAY} | Returns the current day.
 {US_MONTH} | Returns the current month.
 {US_YEAR} | Reutrns the current year.
+{PRIO_STATUS} | Reutrns the current priority status (Requires [Badger-Priorities](https://github.com/JaredScar/Badger-Priorities))
 
 {CURRENT_AOP} | Returns the current AOP.
 {PEACETIME_STATUS} | Returns the current peacetime status.
