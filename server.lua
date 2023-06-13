@@ -2,6 +2,8 @@
 --- Badssentials ---
 --------------------
 
+RegisterNetEvent("Badssentials:AOPChange")
+
 --@desc Sends a message to the client
 --@param src The player you want to send the message to
 --@param msg The message to send
@@ -93,6 +95,7 @@ RegisterCommand(Config.AOPSystem.AOPCommand, function(source, args, rawCommand)
   if IsPlayerAceAllowed(src, Config.AOPSystem.AOP_AcePermission) then 
     -- Allowed to use /aop <aop>
     if #args > 0 then 
+      local oldAOP = currentAOP
       currentAOP = table.concat(args, " ");
       sendMsg(src, "You have set the AOP to: " .. currentAOP);
       TriggerClientEvent('Badssentials:SetAOP', -1, currentAOP);
@@ -103,6 +106,8 @@ RegisterCommand(Config.AOPSystem.AOPCommand, function(source, args, rawCommand)
 
         sendMsg(-1, aopAnnouncement)
       end
+      
+      TriggerEvent("Badssentials:AOPChange", oldAOP, currentAOP, src)
     else 
       -- Not enough arguments
       sendMsg(src, "^1ERROR: Proper usage: /" .. Config.AOPSystem.AOPCommand .. " <zone>");
