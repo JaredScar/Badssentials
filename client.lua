@@ -335,6 +335,21 @@ Citizen.CreateThread(function()
 				disp = disp:gsub("{US_MONTH}", currentMonth);
 				disp = disp:gsub("{US_YEAR}", currentYear);
 				disp = disp:gsub("{CURRENT_AOP}", currentAOP);
+				disp = disp:gsub("{GAME_TIME}", string.sub(100 + math.floor(GetClockHours())%60, 2)..":"..string.sub(100 + math.floor(GetClockMinutes())%60, 2))
+				local day = {
+					[0] = "Sunday",
+					[1] = "Monday",
+					[2] = "Tuesday",
+					[3] = "Wednesday",
+					[4] = "Thursday",
+					[5] = "Friday",
+					[6] = "Saturday",
+				}
+				disp = disp:gsub("{GAME_DAY_STRING}", day[GetClockDayOfWeek()])
+				disp = disp:gsub("{GAME_DAY}", GetClockDayOfMonth())
+				disp = disp:gsub("{GAME_MONTH}", GetClockMonth())
+				disp = disp:gsub("{GAME_YEAR}", GetClockYear())
+
 				if (disp:find("{PEACETIME_STATUS}")) then 
 					if peacetime then 
 						disp = disp:gsub("{PEACETIME_STATUS}", "~g~Enabled")

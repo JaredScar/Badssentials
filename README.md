@@ -122,7 +122,12 @@ Available Placeholders for Displays;
 {COMPASS} | Returns the direction of travel of the player. N, E, S, W, etc.
 {ID} | Returns the server ID of the player.
 Note: All Times are returned as Eastern Standard Time.
-{EST_TIME} | Returns the current time.
+{OS_TIME} | Returns the current time for the OS.
+{GAME_TIME} | Returns the current in-game time.
+{GAME_DAY_STRING} | Returns the current in-game day as string Sunday, Monday, etc.
+{GAME_DAY} | Returns the current in-game day.
+{GAME_MONTH} | Returns the current in-game month.
+{GAME_YEAR} | Return the current in-game year.
 {US_DAY} | Returns the current day.
 {US_MONTH} | Returns the current month.
 {US_YEAR} | Reutrns the current year.
